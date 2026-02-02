@@ -1,0 +1,28 @@
+{
+  "name": "shayi-invoice",
+  "version": "1.0.0",
+  "description": "A stunning Three.js frontend for the South African Invoice API",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.160.0",
+    "gsap": "^3.12.4",
+    "@tweenjs/tween.js": "^23.1.1"
+  },
+  "devDependencies": {
+    "vite": "^5.0.12"
+  },
+  "keywords": [
+    "threejs",
+    "invoice",
+    "south-africa",
+    "3d",
+    "webgl"
+  ],
+  "author": "ShayiInvoice Team",
+  "license": "MIT"
+}
