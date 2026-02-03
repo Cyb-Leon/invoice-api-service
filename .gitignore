@@ -3,6 +3,6 @@ README.md
 target/
 ShayiInvoice/node_modules/
 
-.env.example
+.env
 .dockerignore
 docker-compose.yml
