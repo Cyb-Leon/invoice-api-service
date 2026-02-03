@@ -41,6 +41,8 @@ public class SecurityConfig {
                             "/api-docs/**",
                             "/v3/api-docs/**"
                     ).permitAll()
+                    // Allow actuator endpoints for health checks (Docker/K8s)
+                    .requestMatchers("/actuator/**").permitAll()
                     // Allow H2 console access (development only)
                     .requestMatchers("/h2-console/**").permitAll()
                     // Allow all API endpoints (configure proper auth for production)

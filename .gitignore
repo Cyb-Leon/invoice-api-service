@@ -1,0 +1,8 @@
+/src/main/resources/*
+README.md
+target/
+ShayiInvoice/node_modules/
+
+.env.example
+.dockerignore
+docker-compose.yml
