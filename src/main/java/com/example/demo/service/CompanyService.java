@@ -1,15 +1,16 @@
 package com.example.demo.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.demo.dto.CompanyDTO;
 import com.example.demo.exception.DuplicateResourceException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Company;
 import com.example.demo.repository.CompanyRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service for Company business logic.
@@ -32,11 +33,11 @@ public class CompanyService {
         if (companyRepository.existsByEmail(companyDTO.getEmail())) {
             throw new DuplicateResourceException("Company", "email", companyDTO.getEmail());
         }
-        if (companyDTO.getVatNumber() != null && 
+        if (companyDTO.getVatNumber() != null &&
             companyRepository.existsByVatNumber(companyDTO.getVatNumber())) {
             throw new DuplicateResourceException("Company", "vatNumber", companyDTO.getVatNumber());
         }
-        if (companyDTO.getRegistrationNumber() != null && 
+        if (companyDTO.getRegistrationNumber() != null &&
             companyRepository.existsByRegistrationNumber(companyDTO.getRegistrationNumber())) {
             throw new DuplicateResourceException("Company", "registrationNumber", companyDTO.getRegistrationNumber());
         }
@@ -74,7 +75,7 @@ public class CompanyService {
                 .orElseThrow(() -> new ResourceNotFoundException("Company", "id", id));
 
         // Check for duplicate email if changed
-        if (!company.getEmail().equals(companyDTO.getEmail()) && 
+        if (!company.getEmail().equals(companyDTO.getEmail()) &&
             companyRepository.existsByEmail(companyDTO.getEmail())) {
             throw new DuplicateResourceException("Company", "email", companyDTO.getEmail());
         }

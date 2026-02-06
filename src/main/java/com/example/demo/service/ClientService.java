@@ -1,18 +1,19 @@
 package com.example.demo.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.demo.dto.ClientDTO;
 import com.example.demo.exception.DuplicateResourceException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Client;
 import com.example.demo.model.Company;
 import com.example.demo.repository.ClientRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service for Client business logic.
@@ -112,7 +113,7 @@ public class ClientService {
                 .orElseThrow(() -> new ResourceNotFoundException("Client", "id", id));
 
         // Check for duplicate email if changed
-        if (!client.getEmail().equals(clientDTO.getEmail()) && 
+        if (!client.getEmail().equals(clientDTO.getEmail()) &&
             clientRepository.existsByEmailAndCompanyId(clientDTO.getEmail(), clientDTO.getCompanyId())) {
             throw new DuplicateResourceException("Client", "email", clientDTO.getEmail());
         }

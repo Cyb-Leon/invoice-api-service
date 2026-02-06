@@ -1,23 +1,28 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.InvoiceDTO;
-import com.example.demo.dto.LineItemDTO;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.*;
-import com.example.demo.repository.InvoiceRepository;
-import com.example.demo.repository.LineItemRepository;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Year;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Year;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.example.demo.dto.InvoiceDTO;
+import com.example.demo.dto.LineItemDTO;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.Client;
+import com.example.demo.model.Company;
+import com.example.demo.model.Invoice;
+import com.example.demo.model.InvoiceStatus;
+import com.example.demo.model.LineItem;
+import com.example.demo.repository.InvoiceRepository;
+import com.example.demo.repository.LineItemRepository;
 
 /**
  * Service for Invoice business logic.
@@ -70,7 +75,7 @@ public class InvoiceService {
                 .dueDate(invoiceDTO.getDueDate())
                 .status(InvoiceStatus.DRAFT)
                 .vatRate(invoiceDTO.getVatRate() != null ? invoiceDTO.getVatRate() : defaultVatRate)
-                .discountPercentage(invoiceDTO.getDiscountPercentage() != null ? 
+                .discountPercentage(invoiceDTO.getDiscountPercentage() != null ?
                         invoiceDTO.getDiscountPercentage() : BigDecimal.ZERO)
                 .currency("ZAR")
                 .notes(invoiceDTO.getNotes())
@@ -190,7 +195,7 @@ public class InvoiceService {
                 .orElseThrow(() -> new ResourceNotFoundException("Invoice", "id", id));
 
         // Cannot update paid or cancelled invoices
-        if (invoice.getStatus() == InvoiceStatus.PAID || 
+        if (invoice.getStatus() == InvoiceStatus.PAID ||
             invoice.getStatus() == InvoiceStatus.CANCELLED) {
             throw new BadRequestException("Cannot update a " + invoice.getStatus().name().toLowerCase() + " invoice");
         }
@@ -202,7 +207,7 @@ public class InvoiceService {
         invoice.setTermsAndConditions(invoiceDTO.getTermsAndConditions());
         invoice.setReferenceNumber(invoiceDTO.getReferenceNumber());
         invoice.setPurchaseOrderNumber(invoiceDTO.getPurchaseOrderNumber());
-        
+
         if (invoiceDTO.getVatRate() != null) {
             invoice.setVatRate(invoiceDTO.getVatRate());
         }
@@ -214,7 +219,7 @@ public class InvoiceService {
         if (invoiceDTO.getLineItems() != null) {
             // Clear existing line items
             invoice.getLineItems().clear();
-            
+
             // Add new line items
             for (int i = 0; i < invoiceDTO.getLineItems().size(); i++) {
                 LineItemDTO lineItemDTO = invoiceDTO.getLineItems().get(i);
@@ -242,7 +247,7 @@ public class InvoiceService {
         validateStatusTransition(invoice.getStatus(), newStatus);
 
         invoice.setStatus(newStatus);
-        
+
         if (newStatus == InvoiceStatus.SENT) {
             invoice.markAsSent();
         }
@@ -258,7 +263,7 @@ public class InvoiceService {
         Invoice invoice = invoiceRepository.findByIdAndCompanyId(id, companyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Invoice", "id", id));
 
-        if (invoice.getStatus() != InvoiceStatus.DRAFT && 
+        if (invoice.getStatus() != InvoiceStatus.DRAFT &&
             invoice.getStatus() != InvoiceStatus.PENDING) {
             throw new BadRequestException("Only draft or pending invoices can be sent");
         }
@@ -323,7 +328,7 @@ public class InvoiceService {
     private void validateStatusTransition(InvoiceStatus currentStatus, InvoiceStatus newStatus) {
         // Define valid transitions
         if (currentStatus == InvoiceStatus.PAID || currentStatus == InvoiceStatus.CANCELLED) {
-            throw new BadRequestException("Cannot change status of a " + 
+            throw new BadRequestException("Cannot change status of a " +
                     currentStatus.name().toLowerCase() + " invoice");
         }
         if (currentStatus == InvoiceStatus.REFUNDED) {
@@ -389,7 +394,7 @@ public class InvoiceService {
                 .quantity(dto.getQuantity())
                 .unitOfMeasure(dto.getUnitOfMeasure() != null ? dto.getUnitOfMeasure() : "each")
                 .unitPrice(dto.getUnitPrice())
-                .discountPercentage(dto.getDiscountPercentage() != null ? 
+                .discountPercentage(dto.getDiscountPercentage() != null ?
                         dto.getDiscountPercentage() : BigDecimal.ZERO)
                 .vatInclusive(dto.isVatInclusive())
                 .sortOrder(dto.getSortOrder() != null ? dto.getSortOrder() : 0)

@@ -1,18 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.DashboardDTO;
-import com.example.demo.dto.DashboardDTO.MonthlyRevenueDTO;
-import com.example.demo.dto.DashboardDTO.OverdueInvoiceDTO;
-import com.example.demo.dto.DashboardDTO.RecentInvoiceDTO;
-import com.example.demo.model.Invoice;
-import com.example.demo.model.InvoiceStatus;
-import com.example.demo.repository.ClientRepository;
-import com.example.demo.repository.InvoiceRepository;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
@@ -22,6 +9,20 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.demo.dto.DashboardDTO;
+import com.example.demo.dto.DashboardDTO.MonthlyRevenueDTO;
+import com.example.demo.dto.DashboardDTO.OverdueInvoiceDTO;
+import com.example.demo.dto.DashboardDTO.RecentInvoiceDTO;
+import com.example.demo.model.Invoice;
+import com.example.demo.model.InvoiceStatus;
+import com.example.demo.repository.ClientRepository;
+import com.example.demo.repository.InvoiceRepository;
 
 /**
  * Service for dashboard statistics and reporting.
@@ -48,7 +49,7 @@ public class DashboardService {
         long pendingInvoices = invoiceRepository.countByCompanyIdAndStatus(companyId, InvoiceStatus.PENDING) +
                                invoiceRepository.countByCompanyIdAndStatus(companyId, InvoiceStatus.SENT);
         long paidInvoices = invoiceRepository.countByCompanyIdAndStatus(companyId, InvoiceStatus.PAID);
-        
+
         // Overdue invoices
         List<Invoice> overdueInvoices = invoiceRepository.findOverdueInvoices(companyId, LocalDate.now());
         long overdueCount = overdueInvoices.size();
@@ -60,7 +61,7 @@ public class DashboardService {
         // Financial totals
         BigDecimal totalPaid = invoiceRepository.getTotalPaidAmount(companyId);
         BigDecimal totalOutstanding = invoiceRepository.getTotalOutstandingAmount(companyId);
-        
+
         // Monthly revenue (current month)
         LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1);
         LocalDate endOfMonth = LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth());

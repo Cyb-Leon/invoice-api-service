@@ -1,14 +1,15 @@
 package com.example.demo.config;
 
+import java.util.List;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
 
 /**
  * OpenAPI/Swagger configuration.
@@ -24,7 +25,7 @@ public class OpenApiConfig {
                         .version("1.0.0")
                         .description("""
                                 A comprehensive Invoice Management API designed for South African businesses.
-                                
+
                                 Features:
                                 - Company and client management
                                 - Invoice creation with line items
@@ -32,7 +33,7 @@ public class OpenApiConfig {
                                 - ZAR currency support
                                 - Payment tracking and reconciliation
                                 - Dashboard statistics and reporting
-                                
+
                                 South African specific features:
                                 - VAT registration number validation
                                 - Company registration number validation

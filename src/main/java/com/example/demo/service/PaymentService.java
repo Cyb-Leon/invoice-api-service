@@ -1,5 +1,15 @@
 package com.example.demo.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.demo.dto.PaymentDTO;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
@@ -8,15 +18,6 @@ import com.example.demo.model.InvoiceStatus;
 import com.example.demo.model.Payment;
 import com.example.demo.model.PaymentMethod;
 import com.example.demo.repository.PaymentRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service for Payment business logic.
@@ -53,7 +54,7 @@ public class PaymentService {
         // Validate payment amount
         BigDecimal remainingBalance = invoice.getBalanceDue();
         if (paymentDTO.getAmount().compareTo(remainingBalance) > 0) {
-            throw new BadRequestException("Payment amount (R" + paymentDTO.getAmount() + 
+            throw new BadRequestException("Payment amount (R" + paymentDTO.getAmount() +
                     ") exceeds remaining balance (R" + remainingBalance + ")");
         }
 
@@ -61,7 +62,7 @@ public class PaymentService {
                 .invoice(invoice)
                 .amount(paymentDTO.getAmount())
                 .paymentDate(paymentDTO.getPaymentDate())
-                .paymentMethod(paymentDTO.getPaymentMethod() != null ? 
+                .paymentMethod(paymentDTO.getPaymentMethod() != null ?
                         paymentDTO.getPaymentMethod() : PaymentMethod.EFT)
                 .referenceNumber(paymentDTO.getReferenceNumber())
                 .notes(paymentDTO.getNotes())
@@ -150,7 +151,7 @@ public class PaymentService {
         Invoice invoice = payment.getInvoice();
         BigDecimal remainingBalance = invoice.getBalanceDue()
                 .add(payment.getAmount()); // Add back current payment amount
-        
+
         if (paymentDTO.getAmount().compareTo(remainingBalance) > 0) {
             throw new BadRequestException("Payment amount exceeds remaining balance");
         }

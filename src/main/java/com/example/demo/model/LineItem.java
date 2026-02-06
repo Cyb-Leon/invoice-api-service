@@ -1,13 +1,27 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Entity representing a line item on an invoice.
@@ -86,7 +100,7 @@ public class LineItem {
     protected void calculateLineTotal() {
         if (unitPrice != null && quantity != null) {
             BigDecimal gross = unitPrice.multiply(BigDecimal.valueOf(quantity));
-            
+
             if (discountPercentage != null && discountPercentage.compareTo(BigDecimal.ZERO) > 0) {
                 BigDecimal discount = gross.multiply(discountPercentage)
                         .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
